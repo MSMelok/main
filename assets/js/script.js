@@ -1,14 +1,18 @@
-'use strict';
+"use strict";
 
 // Element toggle function
-const elementToggleFunc = function (elem) { elem.classList.toggle("active"); }
+const elementToggleFunc = function (elem) {
+  elem.classList.toggle("active");
+};
 
 // Sidebar variables
 const sidebar = document.querySelector("[data-sidebar]");
 const sidebarBtn = document.querySelector("[data-sidebar-btn]");
 
 // Sidebar toggle functionality for mobile
-sidebarBtn.addEventListener("click", function () { elementToggleFunc(sidebar); });
+sidebarBtn.addEventListener("click", function () {
+  elementToggleFunc(sidebar);
+});
 
 // Testimonials variables
 const testimonialsItem = document.querySelectorAll("[data-testimonials-item]");
@@ -25,15 +29,19 @@ const modalText = document.querySelector("[data-modal-text]");
 const testimonialsModalFunc = function () {
   modalContainer.classList.toggle("active");
   overlay.classList.toggle("active");
-}
+};
 
 // Add click event to all modal items
 for (let i = 0; i < testimonialsItem.length; i++) {
   testimonialsItem[i].addEventListener("click", function () {
     modalImg.src = this.querySelector("[data-testimonials-avatar]").src;
     modalImg.alt = this.querySelector("[data-testimonials-avatar]").alt;
-    modalTitle.innerHTML = this.querySelector("[data-testimonials-title]").innerHTML;
-    modalText.innerHTML = this.querySelector("[data-testimonials-text]").innerHTML;
+    modalTitle.innerHTML = this.querySelector(
+      "[data-testimonials-title]"
+    ).innerHTML;
+    modalText.innerHTML = this.querySelector(
+      "[data-testimonials-text]"
+    ).innerHTML;
     testimonialsModalFunc();
   });
 }
@@ -48,7 +56,9 @@ const selectItems = document.querySelectorAll("[data-select-item]");
 const selectValue = document.querySelector("[data-selecct-value]");
 const filterBtn = document.querySelectorAll("[data-filter-btn]");
 
-select.addEventListener("click", function () { elementToggleFunc(this); });
+select.addEventListener("click", function () {
+  elementToggleFunc(this);
+});
 
 // Add event in all select items
 for (let i = 0; i < selectItems.length; i++) {
@@ -73,7 +83,7 @@ const filterFunc = function (selectedValue) {
       filterItems[i].classList.remove("active");
     }
   }
-}
+};
 
 // Add event in all filter button items for large screen
 let lastClickedBtn = filterBtn[0];
@@ -100,17 +110,41 @@ deviceInfoInput.type = "hidden";
 deviceInfoInput.name = "deviceInfo";
 form.appendChild(deviceInfoInput);
 
+// Hidden field for location
+const locationInput = document.createElement("input");
+locationInput.type = "hidden";
+locationInput.name = "location";
+form.appendChild(locationInput);
+
 // Capture browser/device details without needing permission
 const deviceInfo = {
-  userAgent: navigator.userAgent,             // Browser and OS details
+  userAgent: navigator.userAgent, // Browser and OS details
   screenResolution: `${window.screen.width}x${window.screen.height}`, // Screen resolution
-  language: navigator.language,               // Browser language
-  platform: navigator.platform,               // Device platform (Windows, Mac, etc.)
-  referrer: document.referrer                 // Referring URL, if available
+  language: navigator.language, // Browser language
+  platform: navigator.platform, // Device platform (Windows, Mac, etc.)
+  referrer: document.referrer, // Referring URL, if available
 };
 
 // Set the device information in the hidden field
 deviceInfoInput.value = JSON.stringify(deviceInfo);
+
+// Get user's location
+if ("geolocation" in navigator) {
+  navigator.geolocation.getCurrentPosition(
+    function (position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      // Store the location in the hidden field
+      locationInput.value = `${latitude},${longitude}`;
+    },
+    function (error) {
+      console.error("Error getting location: ", error);
+    }
+  );
+} else {
+  console.error("Geolocation is not supported by this browser.");
+}
 
 // Add event to all form input fields
 for (let i = 0; i < formInputs.length; i++) {
